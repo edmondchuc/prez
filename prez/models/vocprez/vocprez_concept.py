@@ -118,6 +118,7 @@ class VocPrezConcept(PrezModel):
         broader = []
         r = self.graph.query(
             f"""
+            PREFIX dcterms: <{DCTERMS}>
             PREFIX skos: <{SKOS}>
             
             SELECT DISTINCT *
@@ -147,6 +148,7 @@ class VocPrezConcept(PrezModel):
         narrower = []
         r = self.graph.query(
             f"""
+            PREFIX dcterms: <{DCTERMS}>
             PREFIX skos: <{SKOS}>
             
             SELECT DISTINCT *

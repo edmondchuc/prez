@@ -21,8 +21,9 @@ async def count_schemes():
 async def list_schemes(page: int, per_page: int):
     q = f"""
         PREFIX dcterms: <{DCTERMS}>
+        PREFIX reg: <http://purl.org/linked-data/registry#>
         PREFIX skos: <{SKOS}>
-        SELECT ?cs ?id ?label
+        SELECT ?cs ?id ?label ?desc ?status
         WHERE {{
             ?cs a skos:ConceptScheme ;
                 dcterms:identifier ?id ;
@@ -30,6 +31,9 @@ async def list_schemes(page: int, per_page: int):
             OPTIONAL {{
                 ?cs dcterms:description ?desc .
             }}
+            OPTIONAL {{
+                ?cs reg:status ?status .                
+            }}            
         }} LIMIT {per_page} OFFSET {(page - 1) * per_page}
     """
     r = await sparql_query(q, "VocPrez")
