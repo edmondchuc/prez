@@ -1,0 +1,4 @@
+{
+    "enabledPrezs": ["VocPrez", "SpacePrez", "CatPrez"],
+    "sidenav": true
+}
