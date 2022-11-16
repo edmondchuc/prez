@@ -161,7 +161,7 @@ const router = createRouter({
 });
 
 router.beforeEach(() => {
-    ui.updateRightNavConfig({enabled: true, profiles: []});
+    ui.updateRightNavConfig({enabled: true, profileData: "", currentUrl: ""});
     return true;
 });
 

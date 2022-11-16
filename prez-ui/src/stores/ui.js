@@ -5,8 +5,11 @@ export const useUiStore = defineStore("ui", () => {
     // state
     const rightNavConfig = ref({
         enabled: true,
-        profiles: []
+        profileData: "",
+        currentUrl: ""
     });
+
+    const pageTitle = ref("Prez");
 
     // getters
 
@@ -18,6 +21,7 @@ export const useUiStore = defineStore("ui", () => {
     return {
         // state
         rightNavConfig,
+        pageTitle,
 
         // getters
 

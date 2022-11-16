@@ -5,7 +5,7 @@ import { useUiStore } from "@/stores/ui";
 const ui = useUiStore();
 
 onMounted(() => {
-    ui.updateRightNavConfig({enabled: true, profiles: ["1", "2", "3"]});
+    ui.updateRightNavConfig({enabled: false});
 });
 </script>
 

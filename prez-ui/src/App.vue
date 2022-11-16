@@ -1,13 +1,13 @@
 <script setup>
 import { inject } from "vue";
-import { RouterView } from "vue-router";
+import { RouterView, useRoute } from "vue-router";
 import { useUiStore } from "@/stores/ui";
 import MainNav from "@/components/navs/MainNav.vue";
 import Breadcrumbs from "@/components/Breadcrumbs.vue";
 import RightSideBar from "@/components/navs/RightSideBar.vue";
 
 const sidenav = inject("config").sidenav;
-
+const route = useRoute();
 const ui = useUiStore();
 </script>
 
@@ -22,10 +22,16 @@ const ui = useUiStore();
         <div id="main-content" :class="`${sidenav ? 'sidenav' : ''}`">
             <MainNav :sidenav="sidenav" />
             <div id="content">
-                <div id="content-body">
-                    <RouterView />
-                </div>
-                <RightSideBar v-show="ui.rightNavConfig.enabled" :profiles="ui.rightNavConfig.profiles" />
+                <RouterView v-slot="{ Component }">
+                    <Transition name="fade" mode="out-in">
+                        <div id="content-body" :key="route.path">
+                            <component :is="Component" />
+                        </div>
+                    </Transition>
+                </RouterView>
+                <Transition name="fade">
+                    <RightSideBar v-show="ui.rightNavConfig.enabled" :profileData="ui.rightNavConfig.profileData" :currentUrl="ui.rightNavConfig.currentUrl" />
+                </Transition>
             </div>
         </div>
     </main>
@@ -38,6 +44,12 @@ const ui = useUiStore();
 
 <style lang="scss">
 @import "@/assets/sass/_variables.scss";
+@import "@/assets/sass/_mixins.scss";
+@import "@/assets/sass/_transitions.scss";
+
+* {
+    box-sizing: border-box;
+}
 
 body {
     margin: 0;
@@ -52,6 +64,30 @@ h1, h2, h3, h4, h5, h6 {
 a {
     color: $linkColor;
     text-decoration: none;
+}
+
+.btn {
+    cursor: pointer;
+    background-color: $primary;
+    color: white;
+    border: 1px solid $primary;
+    padding: 6px 8px;
+    border-radius: $borderRadius;
+    @include transition(color, background-color);
+
+    &:hover {
+        background-color: adjust-color($color: $primary, $saturation: 10%, $lightness: -7%)
+    }
+
+    &.outline {
+        background-color: white;
+        color: $primary;
+
+        &:hover {
+            background-color: $primary;
+            color: white;
+        }
+    }
 }
 
 #app {

@@ -25,6 +25,8 @@ const prezDescriptions = {
 </template>
 
 <style lang="scss" scoped>
+@import "@/assets/sass/_variables.scss";
+
 .prez-card-container {
     display: flex;
     flex-direction: row;
@@ -32,7 +34,7 @@ const prezDescriptions = {
 
     .prez-card {
         padding: 20px;
-        background-color: #d5d5d5;
+        background-color: $cardBg;
         flex: 1;
         max-width: 300px;
 
