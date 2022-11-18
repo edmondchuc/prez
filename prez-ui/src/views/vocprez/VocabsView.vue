@@ -4,6 +4,7 @@ import { RouterLink, useRoute } from "vue-router";
 import { DataFactory } from "n3";
 import { useUiStore } from "@/stores/ui";
 import { useRdfStore } from "@/composables/rdfStore";
+import ItemList from "@/components/ItemList.vue";
 
 const { namedNode } = DataFactory;
 
@@ -103,17 +104,11 @@ onMounted(() => {
             iri: subject.id
         };
         store.value.forEach(q => { // get preds & objs for each subj
-            // console.log("quad", q);
-            // console.log("s", q.subject.value);
-            // console.log("p", q.predicate.value);
-            // console.log("o", q.object.value);
-            // console.log("o lang", q.object.language);
-            // console.log("p", q.predicate.toJSON());
-            // console.log("o", q.object.toJSON());
             if (q.predicate.value === qname("skos:prefLabel")) {
                 v.title = q.object.value;
             } else if (q.predicate.value === qname("dcterms:identifier")) {
                 v.id = q.object.value;
+                v.link = `/vocprez/vocab/${q.object.value}`;
             } else if (q.predicate.value === qname("dcterms:description")) {
                 v.description = q.object.value;
             }
@@ -129,38 +124,9 @@ onMounted(() => {
 <template>
     <h1>Vocabs</h1>
     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis in libero qui earum rem facilis optio culpa nobis magnam commodi. Sunt aspernatur obcaecati eos expedita aperiam magnam ipsum incidunt impedit?</p>
-    <div class="list">
-        <RouterLink class="list-item" v-for="vocab in vocabs" :to="`/vocprez/vocab/${vocab.id}`">
-            <h4 class="list-item-title">{{ vocab.title }}</h4>
-            <div v-if="!!vocab.description" class="list-item-desc">{{ vocab.description }}</div>
-        </RouterLink>
-    </div>
+    <ItemList :items="vocabs" />
 </template>
 
 <style lang="scss" scoped>
-@import "@/assets/sass/_variables.scss";
 
-.list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-
-    a.list-item {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-        background-color: $cardBg;
-        padding: 10px;
-
-        .list-item-title {
-            margin: 0;
-        }
-
-        .list-item-desc {
-            font-style: italic;
-            color: grey;
-            font-size: 0.8rem;
-        }
-    }
-}
 </style>

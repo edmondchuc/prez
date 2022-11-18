@@ -2,7 +2,7 @@
 const props = defineProps({
     value: String,
     qname: String,
-    datatype: String,
+    datatype: Object,
     language: String,
     description: String,
     termType: String,

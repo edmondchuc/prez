@@ -42,8 +42,6 @@ onMounted(() => {
             rows: []
         });
     });
-
-    console.log(rows.value)
 });
 </script>
 

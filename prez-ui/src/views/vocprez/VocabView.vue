@@ -5,6 +5,7 @@ import { DataFactory } from "n3";
 import { useUiStore } from "@/stores/ui";
 import { useRdfStore } from "@/composables/rdfStore";
 import PropTable from "@/components/PropTable.vue";
+import ConceptComponent from "@/components/ConceptComponent.vue";
 
 const { namedNode } = DataFactory;
 
@@ -89,20 +90,22 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 <https://example.com/concept1>
     a skos:Concept ;
     dcterms:identifier "concept1"^^xsd:token ;
-    skos:narrower <https://example.com/concept1_1> ;
     skos:prefLabel "Concept 1"@en ;
+    skos:narrower <https://example.com/concept1_1> ;
 .
 
 <https://example.com/concept2>
     a skos:Concept ;
     dcterms:identifier "concept2"^^xsd:token ;
     skos:prefLabel "Concept 2"@en ;
+    skos:narrower <https://example.com/concept2_1> ;
 .
 
 <https://example.com/concept3>
     a skos:Concept ;
     dcterms:identifier "concept3"^^xsd:token ;
     skos:prefLabel "Concept 3"@en ;
+    skos:topConceptOf <https://example.com/${route.params.vocabId}> ;
 .
 
 <https://example.com/concept1_1>
@@ -110,6 +113,21 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
     dcterms:identifier "concept1_1"^^xsd:token ;
     skos:prefLabel "Concept 1.1"@en ;
     skos:broader <https://example.com/concept1> ;
+.
+
+<https://example.com/concept2_1>
+    a skos:Concept ;
+    dcterms:identifier "concept2_1"^^xsd:token ;
+    skos:prefLabel "Concept 2.1"@en ;
+    skos:broader <https://example.com/concept2> ;
+    skos:narrower <https://example.com/concept2_1_1> ;
+.
+
+<https://example.com/concept2_1_1>
+    a skos:Concept ;
+    dcterms:identifier "concept2_1_1"^^xsd:token ;
+    skos:prefLabel "Concept 2.1.1"@en ;
+    skos:broader <https://example.com/concept2_1> ;
 .`;
 
 const hiddenPreds = [
@@ -121,8 +139,8 @@ const hiddenPreds = [
 const properties = ref([]);
 const vocab = ref({});
 const concepts = ref([]);
-const conceptCollapse = ref(true);
-const haveConcepts = ref(false); // flag for whether the get concept request has been done
+const hideConcepts = ref(true);
+const collapseAll = ref(true);
 
 onMounted(() => {
     // API request
@@ -133,14 +151,14 @@ onMounted(() => {
     // RDF querying
     const subject = store.value.getSubjects(namedNode(qname("a")), namedNode(qname("skos:ConceptScheme")))[0];
     vocab.value.iri = subject.id;
-        store.value.forEach(q => { // get preds & objs
-            if (q.predicate.value === qname("skos:prefLabel")) {
-                vocab.value.title = q.object.value;
-            } else if (q.predicate.value === qname("dcterms:description")) {
-                vocab.value.description = q.object.value;
-            }
-            properties.value.push(q);
-        }, subject, null, null);
+    store.value.forEach(q => { // get preds & objs
+        if (q.predicate.value === qname("skos:prefLabel")) {
+            vocab.value.title = q.object.value;
+        } else if (q.predicate.value === qname("dcterms:description")) {
+            vocab.value.description = q.object.value;
+        }
+        properties.value.push(q);
+    }, subject, null, null);
 
     // update alt profiles nav
     ui.updateRightNavConfig({enabled: true, profileData: profileData, currentUrl: route.path});
@@ -151,41 +169,80 @@ function getConcepts() {
 
     // RDF parsing
     parseIntoStore(conceptData);
+
+    let conceptArray = [];
     
     // RDF querying
     store.value.forSubjects(subject => { // for each concept
         let c = {
-            iri: subject.id
+            iri: subject.id,
+            narrower: [],
+            broader: null
         };
         store.value.forEach(q => { // get preds & objs for each subj
             if (q.predicate.value === qname("skos:prefLabel")) {
                 c.title = q.object.value;
             } else if (q.predicate.value === qname("dcterms:identifier")) {
                 c.id = q.object.value;
+            } else if (q.predicate.value === qname("skos:narrower")) {
+                c.narrower.push(q.object.value);
+            } else if (q.predicate.value === qname("skos:broader")) {
+                c.broader = q.object.value;
             }
         }, subject, null, null);
-        concepts.value.push(c);
+        conceptArray.push(c);
     }, namedNode(qname("a")), namedNode(qname("skos:Concept")));
 
-    haveConcepts.value = true;
+    // get top concepts
+    const hasTopConcepts = store.value.getObjects(namedNode(vocab.value.iri), namedNode(qname("skos:hasTopConcept"))).map(o => o.id);
+    const topConceptsOf = store.value.getSubjects(namedNode(qname("skos:topConceptOf"), namedNode(vocab.value.iri))).map(s => s.id);
+    const topConcepts = [...new Set([...hasTopConcepts, ...topConceptsOf])]; // merge & remove duplicates
+
+    // build concept hierarchy tree
+    const indexMap = conceptArray.reduce((obj, c, i) => {
+        obj[c.iri] = i;
+        return obj;
+    }, {});
+
+    let root = { children: [] };
+    conceptArray.forEach(c => {
+        if (c.narrower.length > 0) {
+            c.narrower.forEach(n => conceptArray[indexMap[n]].broader = c.iri);
+        }
+
+        if (topConcepts.includes(c.iri)) {
+            root.children.push(c);
+            return;
+        }
+
+        if (!!c.broader) {
+            const parent = conceptArray[indexMap[c.broader]];
+            parent.children = [...(parent.children || []), c];
+        }
+    });
+    concepts.value = root.children;
 }
 </script>
 
 <template>
     <h1>{{ vocab.title }}</h1>
     <p>Instance IRI: <a :href="vocab.iri" target="_blank" rel="noopener noreferrer">{{ vocab.iri }}</a></p>
-    <p>{{ vocab.description }}</p>
+    <p v-if="!!vocab.description">{{ vocab.description }}</p>
     <PropTable v-if="properties.length > 0" :properties="properties" :prefixes="prefixes" :hiddenPreds="hiddenPreds">
         <template #bottom>
             <tr>
                 <th>Concepts</th>
                 <td>
-                    <button id="concept-collapse-btn" class="btn" @click="!haveConcepts && getConcepts(); conceptCollapse = !conceptCollapse">
-                        <template v-if="conceptCollapse">Expand <i class="fa-regular fa-chevron-down"></i></template>
-                        <template v-else>Collapse <i class="fa-regular fa-chevron-up"></i></template>
+                    <button id="concept-hide-btn" class="btn" @click="concepts.length === 0 && getConcepts(); hideConcepts = !hideConcepts">
+                        <template v-if="hideConcepts">Show <i class="fa-regular fa-chevron-down"></i></template>
+                        <template v-else>Hide <i class="fa-regular fa-chevron-up"></i></template>
                     </button>
-                    <div :class="`concepts ${conceptCollapse ? 'collapse' : ''}`">
-                        <RouterLink v-for="concept in concepts" class="concept" :to="`${route.path}/${concept.id}`">{{ concept.title }}</RouterLink>
+                    <div :class="`concepts ${hideConcepts ? 'collapse' : ''}`">
+                        <button id="collapse-all-btn" @click="collapseAll = !collapseAll" class="btn">
+                            <template v-if="collapseAll"><i class="fa-regular fa-plus"></i> Expand all</template>
+                            <template v-else><i class="fa-regular fa-minus"></i> Collapse all</template>
+                        </button>
+                        <ConceptComponent v-for="concept in concepts" v-bind="concept" :baseUrl="route.path" :collapseAll="collapseAll" />
                     </div>
                 </td>
             </tr>
@@ -195,7 +252,7 @@ function getConcepts() {
 
 <style lang="scss" scoped>
 
-button#concept-collapse-btn {
+button#concept-hide-btn {
     margin-bottom: 12px;
 }
 
@@ -207,6 +264,10 @@ button#concept-collapse-btn {
 
     &.collapse {
         height: 0;
+    }
+
+    button#collapse-all-btn {
+        align-self: baseline;
     }
 }
 </style>
