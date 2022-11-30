@@ -6,51 +6,51 @@ const routes = {
     "VocPrez": [
         {
             "label": "Vocabs",
-            "to": "/vocprez/vocab"
+            "to": "/v/vocab"
         },
         {
             "label": "Collections",
-            "to": "/vocprez/collection"
+            "to": "/v/collection"
         },
         {
             "label": "Profiles",
-            "to": "/vocprez/profiles"
+            "to": "/v/profiles"
         },
         {
             "label": "About",
-            "to": "/vocprez/about"
+            "to": "/v/about"
         },
     ],
     "SpacePrez": [
         {
             "label": "Datasets",
-            "to": "/spaceprez/dataset"
+            "to": "/s/datasets"
         },
         {
             "label": "Conformance",
-            "to": "/spaceprez/conformance"
+            "to": "/s/conformance"
         },
         {
             "label": "Profiles",
-            "to": "/spaceprez/profiles"
+            "to": "/s/profiles"
         },
         {
             "label": "About",
-            "to": "/spaceprez/about"
+            "to": "/s/about"
         },
     ],
     "CatPrez": [
         {
             "label": "Catalogs",
-            "to": "/catprez/catalog"
+            "to": "/c/catalogs"
         },
         {
             "label": "Profiles",
-            "to": "/catprez/profiles"
+            "to": "/c/profiles"
         },
         {
             "label": "About",
-            "to": "/catprez/about"
+            "to": "/c/about"
         },
     ],
 };
@@ -62,7 +62,7 @@ const enabledPrezs = computed(() => {
 });
 
 const activePrez = computed(() => {
-    return enabledPrezs.value.find(prez => route.path.startsWith(`/${prez.toLowerCase()}`));
+    return enabledPrezs.value.find(prez => route.path === `/${prez.toLowerCase()[0]}` || route.path.startsWith(`/${prez.toLowerCase()[0]}/`));
 });
 
 const collapse = ref(false);
@@ -78,7 +78,7 @@ const props = defineProps({
         <nav id="main-nav" :class="`${props.sidenav ? 'sidenav' : ''} ${collapse ? 'collapse' : ''}`">
             <RouterLink to="/" class="nav-item">Home</RouterLink>
             <template v-if="enabledPrezs.length > 1" v-for="prez in enabledPrezs">
-                <RouterLink :to="`/${prez.toLowerCase()}`" class="nav-item">
+                <RouterLink :to="`/${prez.toLowerCase()[0]}`" class="nav-item">
                     {{ prez }} <i class="fa-regular fa-chevron-down"></i>
                 </RouterLink>
                 <nav v-if="prez === activePrez && props.sidenav" id="sub-nav" class="col">
@@ -134,7 +134,7 @@ nav#main-nav {
 
     &.sidenav {
         flex-direction: column;
-        min-width: 180px;
+        min-width: 200px;
     }
 
     &:not(.sidenav) {
@@ -149,7 +149,7 @@ a.nav-item {
     color: $navColor;
     font-weight: bold;
     text-decoration: none;
-    padding: 6px;
+    padding: 6px 10px;
     @include transition(color, background-color);
 
     &:hover {

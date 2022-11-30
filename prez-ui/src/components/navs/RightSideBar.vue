@@ -2,7 +2,7 @@
 import AltNav from "@/components/navs/AltNav.vue";
 
 const props = defineProps({
-    profileData: String,
+    profiles: Array,
     currentUrl: String
 });
 </script>
@@ -10,7 +10,7 @@ const props = defineProps({
 <template>
     <div id="right-nav">
         <Transition name="fade">
-            <AltNav v-show="!!props.profileData" :profileData="props.profileData" :currentUrl="props.currentUrl" />
+            <AltNav v-show="!!props.profiles && props.profiles.length > 0" :profiles="props.profiles" :currentUrl="props.currentUrl" />
         </Transition>
         <div>some other stuff</div>
     </div>

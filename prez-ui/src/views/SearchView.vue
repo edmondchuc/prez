@@ -1,7 +1,14 @@
 <script setup>
-import { inject } from "vue";
+import { inject, onMounted } from "vue";
+import { useUiStore } from "@/stores/ui";
+
+const ui = useUiStore();
 
 const enabledPrezs = inject("config").enabledPrezs;
+
+onMounted(() => {
+    ui.updateRightNavConfig({ enabled: false });
+});
 </script>
 
 <template>

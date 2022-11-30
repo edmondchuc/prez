@@ -9,66 +9,66 @@ import PropTable from "@/components/PropTable.vue";
 
 const { namedNode } = DataFactory;
 
-const profileData = `PREFIX altr-ext: <http://www.w3.org/ns/dx/conneg/altr-ext#>
-PREFIX dcterms: <http://purl.org/dc/terms/>
-PREFIX prof: <http://www.w3.org/ns/dx/prof/>
-PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+// const profileData = `PREFIX altr-ext: <http://www.w3.org/ns/dx/conneg/altr-ext#>
+// PREFIX dcterms: <http://purl.org/dc/terms/>
+// PREFIX prof: <http://www.w3.org/ns/dx/prof/>
+// PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 
-<https://w3id.org/profile/vocpub>
-    a prof:Profile ;
-    dcterms:description "This is a profile of the taxonomy data model SKOS - i.e. SKOS with additional constraints." ;
-    dcterms:identifier "vocpub" ;
-    dcterms:title "VocPub" ;
-    altr-ext:hasDefaultResourceFormat "text/html" ;
-    altr-ext:hasResourceFormat
-        "application/ld+json" ,
-        "application/rdf+xml" ,
-        "text/html" ,
-        "text/turtle" ;
-.
+// <https://w3id.org/profile/vocpub>
+//     a prof:Profile ;
+//     dcterms:description "This is a profile of the taxonomy data model SKOS - i.e. SKOS with additional constraints." ;
+//     dcterms:identifier "vocpub" ;
+//     dcterms:title "VocPub" ;
+//     altr-ext:hasDefaultResourceFormat "text/html" ;
+//     altr-ext:hasResourceFormat
+//         "application/ld+json" ,
+//         "application/rdf+xml" ,
+//         "text/html" ,
+//         "text/turtle" ;
+// .
 
-<https://www.w3.org/TR/vocab-dcat/>
-    a prof:Profile ;
-    dcterms:description "Dataset Catalog Vocabulary (DCAT) is a W3C-authored RDF vocabulary designed to facilitate interoperability between data catalogs" ;
-    dcterms:identifier "dcat" ;
-    dcterms:title "DCAT" ;
-    altr-ext:hasDefaultResourceFormat "text/html" ;
-    altr-ext:hasResourceFormat
-        "application/ld+json" ,
-        "application/rdf+xml" ,
-        "text/html" ,
-        "text/turtle" ;
-.
+// <https://www.w3.org/TR/vocab-dcat/>
+//     a prof:Profile ;
+//     dcterms:description "Dataset Catalog Vocabulary (DCAT) is a W3C-authored RDF vocabulary designed to facilitate interoperability between data catalogs" ;
+//     dcterms:identifier "dcat" ;
+//     dcterms:title "DCAT" ;
+//     altr-ext:hasDefaultResourceFormat "text/html" ;
+//     altr-ext:hasResourceFormat
+//         "application/ld+json" ,
+//         "application/rdf+xml" ,
+//         "text/html" ,
+//         "text/turtle" ;
+// .
 
-<https://w3id.org/profile/dd>
-    a prof:Profile ;
-    dcterms:description "A simple data model to provide items for form drop-down lists. The basic information is an ID & name tuple and the optional extra value is an item's parent. For vocabularies, this is then URI, prefLabel or URI, prefLabel & broader Concept" ;
-    dcterms:identifier "dd" ;
-    dcterms:title "Drop-Down List" ;
-    altr-ext:hasDefaultResourceFormat "application/json" ;
-    altr-ext:hasResourceFormat
-        "application/json" ,
-        "text/csv"
-.
+// <https://w3id.org/profile/dd>
+//     a prof:Profile ;
+//     dcterms:description "A simple data model to provide items for form drop-down lists. The basic information is an ID & name tuple and the optional extra value is an item's parent. For vocabularies, this is then URI, prefLabel or URI, prefLabel & broader Concept" ;
+//     dcterms:identifier "dd" ;
+//     dcterms:title "Drop-Down List" ;
+//     altr-ext:hasDefaultResourceFormat "application/json" ;
+//     altr-ext:hasResourceFormat
+//         "application/json" ,
+//         "text/csv"
+// .
 
-altr-ext:alt-profile
-    a prof:Profile ;
-    dcterms:description "The representation of the resource that lists all other representations (profiles and Media Types)" ;
-    dcterms:identifier "alt" ;
-    dcterms:title "Alternates Profile" ;
-    altr-ext:hasDefaultResourceFormat "text/html" ;
-    altr-ext:hasResourceFormat
-        "application/ld+json" ,
-        "application/rdf+xml" ,
-        "text/html" ,
-        "text/turtle" ;
-.`;
+// altr-ext:alt-profile
+//     a prof:Profile ;
+//     dcterms:description "The representation of the resource that lists all other representations (profiles and Media Types)" ;
+//     dcterms:identifier "alt" ;
+//     dcterms:title "Alternates Profile" ;
+//     altr-ext:hasDefaultResourceFormat "text/html" ;
+//     altr-ext:hasResourceFormat
+//         "application/ld+json" ,
+//         "application/rdf+xml" ,
+//         "text/html" ,
+//         "text/turtle" ;
+// .`;
 
 const apiBaseUrl = inject("config").apiBaseUrl;
 const route = useRoute();
 const ui = useUiStore();
 const { store, prefixes, parseIntoStore, qname } = useRdfStore();
-const { data, loading, error, doRequest } = useGetRequest();
+const { data, profiles, loading, error, doRequest } = useGetRequest();
 
 const hiddenPreds = [
     "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
@@ -104,14 +104,14 @@ onMounted(() => {
                     p.title = q.object.value;
                 } else if (q.predicate.value === "http://purl.org/dc/terms/identifier") {
                     p.id = q.object.value;
-                    p.link = `/catprez/catalog/${route.params.catalogId}/${q.object.value}`;
+                    p.link = `/c/catalogs/${route.params.catalogId}/${q.object.value}`;
                 }
             }, part, null, null);
             parts.value.push(p);
         }, namedNode(catalog.value.iri), namedNode("http://purl.org/dc/terms/hasPart"));
     });
 
-    ui.updateRightNavConfig({ enabled: true, profileData: profileData, currentUrl: route.path });
+    ui.updateRightNavConfig({ enabled: true, profiles: profiles, currentUrl: route.path });
 });
 </script>
 

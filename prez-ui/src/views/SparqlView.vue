@@ -1,10 +1,14 @@
 <script setup>
 import { nextTick, onMounted } from "vue";
-import Yasgui from "@triply/yasgui";
+import Yasqe from "@triply/yasqe";
+import { useUiStore } from "@/stores/ui";
+
+const ui = useUiStore();
 
 onMounted(() => {
+    ui.updateRightNavConfig({ enabled: false });
     nextTick(() => {
-        const yasgui = new Yasgui(document.getElementById("yasgui"), {
+        const yasqe = new Yasqe(document.getElementById("yasqe"), {
             showQueryButton: true,
             resizeable: false,
             createShareableLink: null,
@@ -12,8 +16,6 @@ onMounted(() => {
         });
     });
 });
-
-
 </script>
 
 <template>
@@ -25,7 +27,7 @@ onMounted(() => {
     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque, assumenda. Natus vero nostrum velit, eius iusto
         cupiditate alias quidem in dolorem suscipit veritatis magnam minima. Eveniet quisquam similique molestiae
         dolorum.</p>
-    <div id="yasgui"></div>
+    <div id="yasqe"></div>
     
     <h2>Example Queries</h2>
     <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Mollitia quo, maiores saepe alias consectetur

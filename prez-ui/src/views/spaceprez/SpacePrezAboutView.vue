@@ -1,5 +1,12 @@
 <script setup>
+import { onMounted } from "vue";
+import { useUiStore } from "@/stores/ui";
 
+const ui = useUiStore();
+
+onMounted(() => {
+    ui.updateRightNavConfig({ enabled: false });
+});
 </script>
 
 <template>

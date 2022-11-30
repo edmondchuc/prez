@@ -5,6 +5,7 @@ import { useUiStore } from "@/stores/ui";
 import MainNav from "@/components/navs/MainNav.vue";
 import Breadcrumbs from "@/components/Breadcrumbs.vue";
 import RightSideBar from "@/components/navs/RightSideBar.vue";
+import AltView from "@/views/AltView.vue";
 
 const sidenav = inject("config").sidenav;
 const route = useRoute();
@@ -25,12 +26,12 @@ const ui = useUiStore();
                 <RouterView v-slot="{ Component }">
                     <Transition name="fade" mode="out-in">
                         <div id="content-body" :key="route.path">
-                            <component :is="Component" />
+                            <component :is="route.query && route.query._profile && route.query._profile === 'alt' ? AltView : Component" />
                         </div>
                     </Transition>
                 </RouterView>
                 <Transition name="fade">
-                    <RightSideBar v-show="ui.rightNavConfig.enabled" :profileData="ui.rightNavConfig.profileData" :currentUrl="ui.rightNavConfig.currentUrl" />
+                    <RightSideBar v-show="ui.rightNavConfig.enabled" :profiles="ui.rightNavConfig.profiles" :currentUrl="ui.rightNavConfig.currentUrl" />
                 </Transition>
             </div>
         </div>
@@ -102,7 +103,7 @@ a {
 
         #header-content {
             width: 100%;
-            max-width: $pageMaxWidth;
+            // max-width: $pageMaxWidth;
             margin: 0 auto;
         }
     }
@@ -114,7 +115,7 @@ a {
 
         #main-content {
             width: 100%;
-            max-width: $pageMaxWidth;
+            // max-width: $pageMaxWidth;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
@@ -144,7 +145,7 @@ a {
 
         #footer-content {
             width: 100%;
-            max-width: $pageMaxWidth;
+            // max-width: $pageMaxWidth;
             margin: 0 auto;
         }
     }

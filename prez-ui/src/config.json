@@ -1,5 +1,5 @@
 {
     "enabledPrezs": ["VocPrez", "SpacePrez", "CatPrez"],
     "sidenav": true,
-    "apiBaseUrl": "http://idn-prez.australiasoutheast.azurecontainer.io:8000"
+    "apiBaseUrl": "https://idn-prez.australiasoutheast.azurecontainer.io"
 }

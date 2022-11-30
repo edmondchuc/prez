@@ -13,122 +13,122 @@ const router = createRouter({
             component: () => import("@/views/HomeView.vue")
         },
         {
-            path: "/vocprez",
+            path: "/v",
             name: "vocprez home",
             component: () => import("@/views/vocprez/VocPrezHomeView.vue")
         },
         {
-            path: "/vocprez/about",
+            path: "/v/about",
             name: "vocprez about",
             component: () => import("@/views/vocprez/VocPrezAboutView.vue")
         },
         {
-            path: "/vocprez/profiles",
+            path: "/v/profiles",
             name: "vocprez profiles",
             component: () => import("@/views/vocprez/VocPrezProfilesView.vue")
         },
         {
-            path: "/vocprez/vocab",
+            path: "/v/vocab",
             name: "vocabs",
             component: () => import("@/views/vocprez/VocabsView.vue")
         },
         {
-            path: "/vocprez/vocab/:vocabId",
+            path: "/v/vocab/:vocabId",
             name: "vocab",
             component: () => import("@/views/vocprez/VocabView.vue")
         },
         {
-            path: "/vocprez/vocab/:vocabId/:conceptId",
+            path: "/v/vocab/:vocabId/:conceptId",
             name: "concept",
             component: () => import("@/views/vocprez/ConceptView.vue")
         },
         {
-            path: "/vocprez/collection",
+            path: "/v/collection",
             name: "collections",
             component: () => import("@/views/vocprez/CollectionsView.vue")
         },
         {
-            path: "/vocprez/collection/:collectionId",
+            path: "/v/collection/:collectionId",
             name: "collection",
             component: () => import("@/views/vocprez/CollectionView.vue")
         },
         {
-            path: "/spaceprez",
+            path: "/s",
             name: "spaceprez home",
             component: () => import("@/views/spaceprez/SpacePrezHomeView.vue")
         },
         {
-            path: "/spaceprez/conformance",
+            path: "/s/conformance",
             name: "spaceprez conformance",
             component: () => import("@/views/spaceprez/ConformanceView.vue")
         },
         {
-            path: "/spaceprez/about",
+            path: "/s/about",
             name: "spaceprez about",
             component: () => import("@/views/spaceprez/SpacePrezAboutView.vue")
         },
         {
-            path: "/spaceprez/profiles",
+            path: "/s/profiles",
             name: "spaceprez profiles",
             component: () => import("@/views/spaceprez/SpacePrezProfilesView.vue")
         },
         {
-            path: "/spaceprez/dataset",
+            path: "/s/datasets",
             name: "datasets",
             component: () => import("@/views/spaceprez/DatasetsView.vue")
         },
         {
-            path: "/spaceprez/dataset/:datasetId",
+            path: "/s/datasets/:datasetId",
             name: "dataset",
             component: () => import("@/views/spaceprez/DatasetView.vue")
         },
         {
-            path: "/spaceprez/dataset/:datasetId/collections",
+            path: "/s/datasets/:datasetId/collections",
             name: "feature collections",
             component: () => import("@/views/spaceprez/FeatureCollectionsView.vue")
         },
         {
-            path: "/spaceprez/dataset/:datasetId/collections/:featureCollectionId",
+            path: "/s/datasets/:datasetId/collections/:featureCollectionId",
             name: "feature collection",
             component: () => import("@/views/spaceprez/FeatureCollectionView.vue")
         },
         {
-            path: "/spaceprez/dataset/:datasetId/collections/:featureCollectionId/items",
+            path: "/s/datasets/:datasetId/collections/:featureCollectionId/items",
             name: "features",
             component: () => import("@/views/spaceprez/FeaturesView.vue")
         },
         {
-            path: "/spaceprez/dataset/:datasetId/collections/:featureCollectionId/items/:featureId",
+            path: "/s/datasets/:datasetId/collections/:featureCollectionId/items/:featureId",
             name: "feature",
             component: () => import("@/views/spaceprez/FeatureView.vue")
         },
         {
-            path: "/catprez",
+            path: "/c",
             name: "catprez home",
             component: () => import("@/views/catprez/CatPrezHomeView.vue")
         },
         {
-            path: "/catprez/about",
+            path: "/c/about",
             name: "catprez about",
             component: () => import("@/views/catprez/CatPrezAboutView.vue")
         },
         {
-            path: "/catprez/profiles",
+            path: "/c/profiles",
             name: "catprez profiles",
             component: () => import("@/views/catprez/CatPrezProfilesView.vue")
         },
         {
-            path: "/catprez/catalog",
+            path: "/c/catalogs",
             name: "catalogs",
             component: () => import("@/views/catprez/CatalogsView.vue")
         },
         {
-            path: "/catprez/catalog/:catalogId",
+            path: "/c/catalogs/:catalogId",
             name: "catalog",
             component: () => import("@/views/catprez/CatalogView.vue")
         },
         {
-            path: "/catprez/catalog/:catalogId/:resourceId",
+            path: "/c/catalogs/:catalogId/:resourceId",
             name: "resource",
             component: () => import("@/views/catprez/ResourceView.vue")
         },
@@ -157,11 +157,26 @@ const router = createRouter({
             name: "object",
             component: () => import("@/views/ObjectView.vue")
         },
+        // {
+        //     path: "/:path",
+        //     name: "alternate profiles",
+        //     component: () => import("@/views/AltView.vue")
+        // },
+        {
+            path: "/:pathMatch(.*)*",
+            name: "not found",
+            component: () => import("@/views/NotFoundView.vue")
+        },
     ]
 });
 
 router.beforeEach(() => {
-    ui.updateRightNavConfig({enabled: true, profileData: "", currentUrl: ""});
+    ui.updateRightNavConfig({ enabled: true, profiles: [], currentUrl: "" });
+    // if (to.query && to.query._profile === "alt" && to.name !== "alternate profiles") {
+    //     next({ name: "alternate profiles", params: { path: to.path.slice(1) }, query: { _profile: "alt" } });
+    // } else {
+    //     next();
+    // }
     return true;
 });
 

@@ -1,11 +1,19 @@
 <script setup>
-import { onMounted } from "vue";
+import { ref, onMounted, inject } from "vue";
+import { useRoute } from "vue-router";
 import { useUiStore } from "@/stores/ui";
+import { useGetRequest } from "@/composables/api";
 
+const apiBaseUrl = inject("config").apiBaseUrl;
+const route = useRoute();
 const ui = useUiStore();
+const { data, profiles, loading, error, doRequest } = useGetRequest();
 
 onMounted(() => {
-    ui.updateRightNavConfig({enabled: true, profiles: ["1", "2", "3"]});
+    doRequest(`${apiBaseUrl}/s`);
+
+    ui.updateRightNavConfig({ enabled: true, profiles: profiles, currentUrl: route.path });
+
 });
 </script>
 
