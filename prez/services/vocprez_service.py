@@ -20,16 +20,23 @@ async def count_schemes():
 
 async def list_schemes(page: int, per_page: int):
     q = f"""
+        PREFIX dcat: <{DCAT}>
         PREFIX dcterms: <{DCTERMS}>
+        PREFIX prov: <{PROV}>
         PREFIX reg: <http://purl.org/linked-data/registry#>
         PREFIX skos: <{SKOS}>
-        SELECT ?cs ?id ?label ?desc ?status
+        SELECT ?cs ?id ?label ?desc ?dmode ?status
         WHERE {{
             ?cs a skos:ConceptScheme ;
                 dcterms:identifier ?id ;
                 skos:prefLabel ?label .
             OPTIONAL {{
                 ?cs dcterms:description ?desc .
+            }}
+            OPTIONAL {{
+                ?cs prov:qualifiedDerivation [
+                        dcat:hadRole ?dmode ;
+                    ] .             
             }}
             OPTIONAL {{
                 ?cs reg:status ?status .                

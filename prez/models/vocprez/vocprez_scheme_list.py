@@ -11,6 +11,7 @@ class VocPrezSchemeList(object):
                     "title": result["label"]["value"],
                     "id": result["id"]["value"],
                     "desc": result["desc"].get("value") if result.get("desc") else None,
+                    "dmode": result["dmode"].get("value") if result.get("dmode") else None,
                     "status": result["status"].get("value") if result.get("status") else None,
                     "link": f"/vocab/{result['id']['value']}",
                     "members": None,
