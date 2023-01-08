@@ -23,9 +23,10 @@ async def list_schemes(page: int, per_page: int):
         PREFIX dcat: <{DCAT}>
         PREFIX dcterms: <{DCTERMS}>
         PREFIX prov: <{PROV}>
+        PREFIX rdfs: <{RDFS}>
         PREFIX reg: <http://purl.org/linked-data/registry#>
         PREFIX skos: <{SKOS}>
-        SELECT ?cs ?id ?label ?desc ?dmode ?status
+        SELECT ?cs ?id ?label ?desc ?cust ?cust_lbl ?dmode ?status
         WHERE {{
             ?cs a skos:ConceptScheme ;
                 dcterms:identifier ?id ;
@@ -34,15 +35,30 @@ async def list_schemes(page: int, per_page: int):
                 ?cs dcterms:description ?desc .
             }}
             OPTIONAL {{
+                {{
+                ?cs prov:qualifiedAttribution [
+                    prov:agent ?cust ;
+                    dcat:hadRole <http://def.isotc211.org/iso19115/-1/2018/CitationAndResponsiblePartyInformation/code/CI_RoleCode/custodian> ;
+                ] ;
+                }}
+                UNION 
+                {{
+                    ?cs dcterms:creator ?cust .
+                }}
+                
+                ?cust rdfs:label ?cust_lbl .
+            }}            
+            OPTIONAL {{
                 ?cs prov:qualifiedDerivation [
-                        dcat:hadRole ?dmode ;
-                    ] .             
+                    dcat:hadRole ?dmode ;
+                ] .             
             }}
             OPTIONAL {{
                 ?cs reg:status ?status .                
             }}            
         }} LIMIT {per_page} OFFSET {(page - 1) * per_page}
     """
+    print(q)
     r = await sparql_query(q, "VocPrez")
     if r[0]:
         return r[1]
