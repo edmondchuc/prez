@@ -216,9 +216,8 @@
         </div>
         <div class="search-result-body">
             <div>
-                <a class="search-result-vocab" href="{{ base_url }}/object?uri={{ result.cs.value }}"{% if not is_self %} target="_blank"{% endif %}>Vocab</a>
+                <a class="search-result-vocab" href="{{ base_url }}/object?uri={{ result.cs.value }}"{% if not is_self %} target="_blank"{% endif %}>Within vocab: {{ result.cs.value }}</a>
             </div>
-            <div class="search-result-desc">desc</div>
         </div>
     </div>
 {% endmacro %}

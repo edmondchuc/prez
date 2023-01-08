@@ -444,6 +444,8 @@ async def search(
         if retries == 3:
             raise Exception("Max retries reached")
         results = SkosSearch.combine_search_results(s, "preflabel")
+        print("results")
+        print(results)
     else:
         results = []
 
