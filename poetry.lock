@@ -276,7 +276,7 @@ prettytable = "^2.2.1"
 [package.source]
 type = "git"
 url = "https://github.com/surroundaustralia/vocprez-fedsearch.git"
-reference = "HEAD"
+reference = "master"
 resolved_reference = "c5618c385d7054fb02dc0ca4599a8321ca0fef06"
 
 [[package]]
@@ -1311,7 +1311,7 @@ docs = ["mkdocs", "mkdocs-material"]
 [package.source]
 type = "git"
 url = "https://github.com/accent-starlette/starlette-core.git"
-reference = "HEAD"
+reference = "master"
 resolved_reference = "88e94be0cc65e457e32f2586a3c8860c6c08fca9"
 
 [[package]]
@@ -1481,4 +1481,4 @@ email = ["email-validator"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "0550cbb61bc7075998cde88a441d41f0f0de1b6329edb54fbe164f3cf93e835f"
+content-hash = "4d7cdbf1fe69bbca287f9bfefa1db351a00c91973597d715c12ab424ebe65c94"
