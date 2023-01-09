@@ -209,7 +209,7 @@ async def get_collection_construct_1(
         }}
         WHERE {{
             {query_by_id if collection_id is not None else query_by_uri}
-            VALUES ?p1 {{rdf:type dcterms:identifier dcterms:title geo:hasBoundingBox dcterms:provenance rdfs:label dcterms:description}}
+            VALUES ?p1 {{rdf:type dcterms:identifier dcterms:title geo:hasBoundingBox dcterms:provenance rdfs:label dcterms:description }}
             ?coll ?p1 ?o1 .
 
             ?d a dcat:Dataset ;
