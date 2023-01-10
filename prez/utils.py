@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Dict, List
 
 import jinja2
-from starlette_core.templating import Jinja2Templates
+from starlette.templating import Jinja2Templates
 
 from prez.config import *
 
