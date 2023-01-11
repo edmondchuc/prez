@@ -418,18 +418,20 @@ async def search(
     """Displays the search page of Prez"""
     # Concept search
     if search is not None and search != "":
-        self_sparql_endpoint = str(request.base_url)[:-1] + "/sparql"
         endpoint_details = []
-        for endpoint in endpoints:
-            if endpoint in [
-                e["url"] for e in SEARCH_ENDPOINTS
-            ]:  # only use valid endpoints
-                if endpoint == "self":
-                    endpoint_details.append(
-                        EndpointDetails(self_sparql_endpoint, None, None)
-                    )
-                else:
-                    endpoint_details.append(EndpointDetails(endpoint, None, None))
+        for prez in ENABLED_PREZS:
+            if prez == "VocPrez":
+                endpoint_details.append(
+                    EndpointDetails(VOCPREZ_SPARQL_ENDPOINT, None, None)
+                )
+            elif prez == "SpacePrez":
+                endpoint_details.append(
+                    EndpointDetails(SPACEPREZ_SPARQL_ENDPOINT, None, None)
+                )
+            elif prez == "CatPrez":
+                endpoint_details.append(
+                    EndpointDetails(CATPREZ_SPARQL_ENDPOINT, None, None)
+                )
         s = []
         retries = 0
         while retries < 3:
