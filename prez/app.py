@@ -439,6 +439,7 @@ async def search(
                 )
                 break
             except Exception:
+                raise
                 retries += 1
                 continue
         if retries == 3:
