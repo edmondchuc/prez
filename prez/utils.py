@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Dict, List
 
 import jinja2
+from jinja2 import Environment
 from starlette.templating import Jinja2Templates
 
 from prez.config import *
@@ -73,9 +74,9 @@ template_list = [str(Path(__file__).parent / "templates")]
 if THEME_VOLUME is not None:
     template_list.insert(0, f"{Path(__file__).parent / THEME_VOLUME}/templates")
 
-templates = Jinja2Templates(
-    loader=jinja2.ChoiceLoader([jinja2.FileSystemLoader(template_list)])
-)
+templates = Jinja2Templates(directory=template_list[0],
+                            loader=jinja2.ChoiceLoader([jinja2.FileSystemLoader(template_list)])
+                            )
 templates.env.filters["get_config"] = get_config
 templates.env.filters["append_qsa"] = append_qsa
 templates.env.filters["file_exists"] = file_exists
