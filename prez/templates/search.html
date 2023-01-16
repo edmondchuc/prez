@@ -40,13 +40,17 @@
             {{ render_cql_form(props, datasets, collections, none, none) }}
         {% endif %}
     </div>
-    {% if "VocPrez" in prezs and results | length > 0 %}
+    {% if "VocPrez" in prezs %}
         <div>
             <h2>Search Results</h2>
             <div id="search-results">
-                {% for result in results %}
-                    {{ render_search_result(result) }}
-                {% endfor %}
+                {% if results | length > 0 %}
+                    {% for result in results %}
+                        {{ render_search_result(result) }}
+                    {% endfor %}
+                {% else %}
+                    <p>No results found.</p>
+                {% endif %}
             </div>
         </div>
     {% endif %}
