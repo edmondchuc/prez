@@ -120,13 +120,26 @@ async def app_startup():
         "TimePrez": TIMEPREZ_SPARQL_ENDPOINT,
         "CatPrez": CATPREZ_SPARQL_ENDPOINT,
     }
+    prez2username = {
+        "SpacePrez": SPACEPREZ_SPARQL_USERNAME,
+        "VocPrez": VOCPREZ_SPARQL_USERNAME,
+        "TimePrez": TIMEPREZ_SPARQL_USERNAME,
+        "CatPrez": CATPREZ_SPARQL_USERNAME,
+    }
+    prez2password = {
+        "SpacePrez": SPACEPREZ_SPARQL_PASSWORD,
+        "VocPrez": VOCPREZ_SPARQL_PASSWORD,
+        "TimePrez": TIMEPREZ_SPARQL_PASSWORD,
+        "CatPrez": CATPREZ_SPARQL_PASSWORD,
+    }
     if len(ENABLED_PREZS) > 0:
         for prez in ENABLED_PREZS:
             connected_to_prez_flavour = False
             while not connected_to_prez_flavour:
                 try:
                     print(f"Trying endpoint {prez2endpoint[prez]}")
-                    response = httpx.head(prez2endpoint[prez])
+                    response = httpx.head(url=prez2endpoint[prez],
+                                          auth=(prez2username[prez], prez2password[prez]))
                     response.raise_for_status()
                     if response.reason_phrase == "OK":
                         print(
