@@ -83,11 +83,13 @@ class VocPrezSchemeRenderer(Renderer):
             writer.writerow(
                 [c["iri"], c["prefLabel"], "\n".join([b for b in c["broader"]])]
             )
+        headers = self.headers
+        headers["Content-Disposition"] = f'attachment; filename="{self.scheme_id}.csv"'
 
         return PlainTextResponse(
             content=output.getvalue(),
             media_type="test/csv",
-            headers=self.headers,
+            headers=headers,
         )
 
     def _render_dd(self):
